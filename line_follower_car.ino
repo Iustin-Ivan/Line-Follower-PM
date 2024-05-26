@@ -311,17 +311,6 @@ void loop(){
 
       int thisNote = current_note;
 
-      // calculates the duration of each note
-      divider = pgm_read_word_near(melody+thisNote + 1);
-      if (divider > 0) {
-        // regular note, just proceed
-        noteDuration = (wholenote) / divider;
-      } else if (divider < 0) {
-        // dotted notes are represented with negative durations!!
-        noteDuration = (wholenote) / abs(divider);
-        noteDuration *= 1.5; // increases the duration in half for dotted notes
-      }
-
       // we only play the note for 90% of the duration, leaving 10% as a pause
       tone(buzzer, pgm_read_word_near(melody+thisNote), 90);
 
