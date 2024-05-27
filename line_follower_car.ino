@@ -97,7 +97,7 @@
 int tempo = 225;
 
 // change this to whichever pin you want to use
-int buzzer = 11;
+int buzzer = 13;
 
 // notes of the moledy followed by the duration.
 // a 4 means a quarter note, 8 an eighteenth , 16 sixteenth, so on
@@ -231,12 +231,12 @@ int divider = 0, noteDuration = 0;
 
 int current_note = 0;
 
-#define enA 8//Enable1 L298 Pin enA 
+#define enA 10//Enable1 L298 Pin enA 
 #define in1 4 //Motor1  L298 Pin in1 
 #define in2 5 //Motor1  L298 Pin in2
 #define in3 6 //Motor2  L298 Pin in3 
 #define in4 7 //Motor2  L298 Pin in4 
-#define enB 13 //Enable2 L298 Pin enB 
+#define enB 11 //Enable2 L298 Pin enB 
 
 #define R_S 2 //ir sensor Right
 #define L_S 12 //ir sensor Left
@@ -280,7 +280,7 @@ lcd.print("Race time");
 void loop(){  
   bool right_sensor = digitalRead(R_S);
   bool left_sensor = digitalRead(L_S);
-
+  
   if (!stop) {
     
     unsigned long currentMillis = millis();
@@ -305,7 +305,7 @@ void loop(){
 
     if((right_sensor)&&(left_sensor)){
       stop = true;
-      final_time = millis - start_time;
+      final_time = millis() - start_time;
       Stop();
     }
 
@@ -326,8 +326,9 @@ void loop(){
   if (millis() - start_time >= 15000) {
     if (!stop) {
       final_time = millis() - start_time;
+      stop = true;
+      Stop();
     }
-    stop = true;
   }
 
   if (stop) {
@@ -347,6 +348,7 @@ void loop(){
     digitalWrite(R_LED, LOW);
     delay(1000);
   }
+  
 }
 
 void forward(){ 
@@ -354,8 +356,6 @@ digitalWrite(in1, HIGH);  //right wheels move forward
 digitalWrite(in2, LOW);  
 digitalWrite(in3, LOW); 
 digitalWrite(in4, HIGH);   // left wheels move forward
-analogWrite(enA, 128); // Write The Duty Cycle 0 to 255 Enable Pin A for Motor1 Speed 
-analogWrite(enB, 128); // Write The Duty Cycle 0 to 255 Enable Pin B for Motor2 Speed 
 Serial.println("Forward");
 }
 
