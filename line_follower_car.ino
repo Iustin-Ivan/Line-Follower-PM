@@ -280,53 +280,17 @@ lcd.print("Race time");
 void loop(){  
   bool right_sensor = digitalRead(R_S);
   bool left_sensor = digitalRead(L_S);
-  
-  if (!stop) {
-    
-    unsigned long currentMillis = millis();
+  if((!right_sensor)&&(!left_sensor) && (!stop)){forward();}   //if Right Sensor and Left Sensor are at White color then it will call forword function
 
-    unsigned long seconds = currentMillis / 1000;
-    unsigned long milliseconds = currentMillis % 1000;
-    char timeBuffer[16];
-    snprintf(timeBuffer, sizeof(timeBuffer), "%04lu.%03lu", seconds, milliseconds);
-    lcd.setCursor(0, 1);
-    lcd.print(timeBuffer);
-    if((!right_sensor)&&(!left_sensor)){
-      forward();
-    }
+  if((right_sensor)&&(!left_sensor)&&(!stop)){turnRight();} //if Right Sensor is Black and Left Sensor is White then it will call turn Right function  
 
-    if((right_sensor)&&(!left_sensor)){
-      turnRight();
-    }
+  if((!right_sensor)&&(left_sensor)&&(!stop)){turnLeft();}  //if Right Sensor is White and Left Sensor is Black then it will call turn Left function
 
-    if((!right_sensor)&&(left_sensor)){
-      turnLeft();
-    }
-
-    if((right_sensor)&&(left_sensor)){
-      stop = true;
-      final_time = millis() - start_time;
-      Stop();
-    }
-
-      int thisNote = current_note;
-
-      // we only play the note for 90% of the duration, leaving 10% as a pause
-      tone(buzzer, pgm_read_word_near(melody+thisNote), 90);
-
-      // Wait for the specief duration before playing the next note.
-      delay(100);
-
-      // stop the waveform generation before the next note.
-      noTone(buzzer);
-      current_note +=2;
-    
-  }
+  if((right_sensor)&&(left_sensor)&&(!stop)){Stop();} //if Right Sensor and Left Sensor are at Black color then it will call Stop function
 
   if (millis() - start_time >= 15000) {
     if (!stop) {
       final_time = millis() - start_time;
-      stop = true;
       Stop();
     }
   }
@@ -347,7 +311,30 @@ void loop(){
     digitalWrite(L_LED, LOW);
     digitalWrite(R_LED, LOW);
     delay(1000);
+  } else {
+    unsigned long currentMillis = millis();
+
+    unsigned long seconds = currentMillis / 1000;
+    unsigned long milliseconds = currentMillis % 1000;
+    char timeBuffer[16];
+    snprintf(timeBuffer, sizeof(timeBuffer), "%04lu.%03lu", seconds, milliseconds);
+    lcd.setCursor(0, 1);
+    lcd.print(timeBuffer);
+
+    int thisNote = current_note;
+
+      // we only play the note for 90% of the duration, leaving 10% as a pause
+    tone(buzzer, pgm_read_word_near(melody+thisNote), 90);
+
+      // Wait for the specief duration before playing the next note.
+    delay(100);
+
+      // stop the waveform generation before the next note.
+    noTone(buzzer);
+    current_note +=2;
   }
+
+   
   
 }
 
@@ -357,6 +344,8 @@ digitalWrite(in2, LOW);
 digitalWrite(in3, LOW); 
 digitalWrite(in4, HIGH);   // left wheels move forward
 Serial.println("Forward");
+digitalWrite(R_LED, LOW);
+digitalWrite(L_LED, LOW);
 }
 
 void turnRight(){ 
@@ -366,6 +355,7 @@ digitalWrite(in3, LOW);
 digitalWrite(in4, HIGH);   // left wheels move forward
 Serial.println("RIGHT");
 digitalWrite(R_LED, HIGH);
+digitalWrite(L_LED, LOW);
 }
 
 void turnLeft(){
@@ -375,6 +365,7 @@ digitalWrite(in3, HIGH);
 digitalWrite(in4, LOW);
 Serial.println("Left");
 digitalWrite(L_LED, HIGH);
+digitalWrite(R_LED, LOW);
 }
 
 void Stop(){ //stop
@@ -383,6 +374,7 @@ digitalWrite(in2, LOW); //Right Motor backword Pin
 digitalWrite(in3, LOW); //Left Motor backword Pin 
 digitalWrite(in4, LOW); //Left Motor forword Pin 
 Serial.println("STOP");
+stop = true;
 
 lcd.setCursor(0, 0); // Set the cursor to column 0, line 0
 lcd.print("Time");
