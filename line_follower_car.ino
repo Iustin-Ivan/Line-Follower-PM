@@ -321,7 +321,7 @@ void loop(){
     lcd.setCursor(0, 1);
     lcd.print(timeBuffer);
 
-    int thisNote = current_note;
+    /*int thisNote = current_note;
 
       // we only play the note for 90% of the duration, leaving 10% as a pause
     tone(buzzer, pgm_read_word_near(melody+thisNote), 90);
@@ -331,7 +331,7 @@ void loop(){
 
       // stop the waveform generation before the next note.
     noTone(buzzer);
-    current_note +=2;
+    current_note +=2; */
   }
 
    
@@ -375,6 +375,7 @@ digitalWrite(in3, LOW); //Left Motor backword Pin
 digitalWrite(in4, LOW); //Left Motor forword Pin 
 Serial.println("STOP");
 stop = true;
+final_time = millis() - start_time;
 
 lcd.setCursor(0, 0); // Set the cursor to column 0, line 0
 lcd.print("Time");
